@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a4a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="節能資格查詢">
+<title>115年服務業深度節能輔導 ─ 申請資格查詢</title>
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;節能資格查詢&quot;,&quot;short_name&quot;:&quot;節能查詢&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#f5f7f6&quot;,&quot;theme_color&quot;:&quot;#0a4a3a&quot;}">
+<style>
+  :root {
+    --teal-900: #062e24;
+    --teal-800: #0a4a3a;
+    --teal-700: #0f6e56;
+    --teal-600: #1a9070;
+    --teal-400: #34c49a;
+    --teal-200: #9fe1cb;
+    --teal-100: #d0f0e5;
+    --teal-50:  #f0faf6;
+    --navy:     #0d2233;
+    --red-700:  #a32d2d;
+    --red-100:  #f7c1c1;
+    --red-50:   #fff0f0;
+    --green-700:#27500a;
+    --green-100:#c0dd97;
+    --green-50: #eaf3de;
+    --gray-900: #1a1a1a;
+    --gray-700: #3a3a3a;
+    --gray-500: #6b6b6b;
+    --gray-300: #c8c8c8;
+    --gray-100: #f0f0f0;
+    --gray-50:  #f7f7f7;
+    --white:    #ffffff;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Microsoft JhengHei', 'PingFang TC', '微軟正黑體', sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom, 24px);
+  }
+
+  /* ── Header ── */
+  .app-header {
+    background: linear-gradient(135deg, var(--teal-800) 0%, var(--navy) 100%);
+    padding: 20px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .app-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .app-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 30%;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(52,196,154,0.07);
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(52,196,154,0.18);
+    border: 1px solid rgba(52,196,154,0.3);
+    color: var(--teal-200);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    letter-spacing: 0.03em;
+  }
+  .header-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal-400);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .header-title {
+    font-size: clamp(18px, 5vw, 22px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.35;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    position: relative;
+  }
+
+  /* ── Main ── */
+  .main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* ── Search Card ── */
+  .search-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .search-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-500);
+    margin-bottom: 10px;
+    display: block;
+  }
+  .search-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .ban-input {
+    flex: 1;
+    height: 52px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    padding: 0 16px;
+    font-size: 20px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.12em;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .ban-input:focus {
+    outline: none;
+    border-color: var(--teal-600);
+    box-shadow: 0 0 0 3px rgba(15,110,86,0.12);
+    background: var(--white);
+  }
+  .ban-input::placeholder { color: var(--gray-300); letter-spacing: 0.05em; font-size: 16px; }
+  .search-btn {
+    width: 52px; height: 52px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--teal-700);
+    color: var(--white);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.18s, transform 0.1s;
+    flex-shrink: 0;
+  }
+  .search-btn:active { transform: scale(0.95); background: var(--teal-800); }
+  .search-btn svg { width: 22px; height: 22px; }
+  .clear-btn {
+    width: 52px; height: 52px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--gray-300);
+    background: transparent;
+    color: var(--gray-500);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.18s;
+    flex-shrink: 0;
+  }
+  .clear-btn:active { background: var(--gray-100); }
+  .hint-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  .hint-icon { width: 14px; height: 14px; opacity: 0.6; }
+
+  /* ── States ── */
+  .state-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    text-align: center;
+    gap: 12px;
+  }
+  .state-icon { font-size: 40px; }
+  .state-title { font-size: 15px; font-weight: 500; color: var(--gray-700); }
+  .state-sub { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
+  .spinner-ring {
+    width: 40px; height: 40px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--teal-600);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Result Card ── */
+  .result-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-bottom: 16px;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .result-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .company-name-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .company-avatar {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: var(--teal-100);
+    color: var(--teal-700);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .company-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .company-ban {
+    font-size: 13px;
+    color: var(--gray-500);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.05em;
+  }
+  .meta-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--gray-100);
+    color: var(--gray-500);
+  }
+
+  /* ── Industry rows ── */
+  .industries-section {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gray-500);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .industry-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .industry-item:last-child { border-bottom: none; }
+  .ind-status {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .ind-status.ok { background: var(--green-50); }
+  .ind-status.ng { background: var(--red-50); }
+  .ind-status svg { width: 14px; height: 14px; }
+  .ind-body { flex: 1; min-width: 0; }
+  .ind-code {
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    color: var(--gray-500);
+    margin-bottom: 2px;
+    letter-spacing: 0.04em;
+  }
+  .ind-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-900);
+    margin-bottom: 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ind-cat {
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  .ind-cat.ok { color: var(--teal-700); }
+
+  /* ── Verdict ── */
+  .verdict-section { padding: 16px 20px; }
+  .verdict-box {
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+  }
+  .verdict-box.eligible {
+    background: var(--green-50);
+    border: 1.5px solid var(--green-100);
+  }
+  .verdict-box.ineligible {
+    background: var(--red-50);
+    border: 1.5px solid var(--red-100);
+  }
+  .verdict-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .verdict-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .eligible .verdict-icon { background: rgba(39,80,10,0.12); }
+  .ineligible .verdict-icon { background: rgba(163,45,45,0.12); }
+  .verdict-icon svg { width: 18px; height: 18px; }
+  .verdict-title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .eligible .verdict-title { color: var(--green-700); }
+  .ineligible .verdict-title { color: var(--red-700); }
+  .verdict-desc {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .eligible .verdict-desc { color: #3B6D11; }
+  .ineligible .verdict-desc { color: #7a2020; }
+
+  /* ── Timestamp ── */
+  .query-time {
+    font-size: 11px;
+    color: var(--gray-500);
+    text-align: right;
+    padding: 10px 20px;
+    border-top: 1px solid var(--gray-100);
+  }
+
+  /* ── Error ── */
+  .error-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid #e24b4a;
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    animation: fadeUp 0.25s ease;
+    margin-bottom: 16px;
+  }
+  .error-icon { font-size: 22px; flex-shrink: 0; }
+  .error-title { font-size: 14px; font-weight: 600; color: var(--red-700); margin-bottom: 4px; }
+  .error-desc  { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+  /* ── Reference Table ── */
+  .ref-section {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .ref-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-700);
+    font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+    transition: background 0.15s;
+  }
+  .ref-toggle:active { background: var(--gray-50); }
+  .ref-toggle-icon {
+    width: 20px; height: 20px;
+    transition: transform 0.25s;
+    color: var(--gray-500);
+  }
+  .ref-toggle-icon.open { transform: rotate(180deg); }
+  .ref-body {
+    display: none;
+    padding: 0 20px 16px;
+  }
+  .ref-body.open { display: block; }
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .ref-table th {
+    text-align: left;
+    padding: 8px 10px;
+    background: var(--teal-50);
+    color: var(--teal-700);
+    font-weight: 600;
+    font-size: 11px;
+    border-bottom: 1px solid var(--teal-100);
+  }
+  .ref-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-700);
+    vertical-align: top;
+  }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table td:first-child {
+    font-weight: 700;
+    color: var(--teal-700);
+    font-size: 14px;
+    width: 32px;
+  }
+  .ref-range {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--gray-500);
+    white-space: nowrap;
+  }
+
+  /* ── Footer ── */
+  .app-footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--gray-300);
+    padding: 20px 0 4px;
+    line-height: 1.8;
+  }
+
+  /* ── Mobile adjustments ── */
+  @media (max-width: 400px) {
+    .app-header { padding: 16px 16px 24px; }
+    .search-card { padding: 16px; }
+    .ban-input { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-badge">
+    <span class="header-dot"></span>
+    115年政府節能輔導計畫
+  </div>
+  <h1 class="header-title">服務業深度節能輔導<br>申請資格查詢系統</h1>
+  <p class="header-sub">輸入廠商統一編號 → 即時查詢是否符合申請資格<br>資料來源：財政部財政資訊中心稅籍登記資料</p>
+</div>
+
+<div class="main">
+
+  <!-- Search -->
+  <div class="search-card">
+    <label class="search-label" for="banInput">廠商統一編號（8 碼數字）</label>
+    <div class="search-row">
+      <input
+        type="tel"
+        id="banInput"
+        class="ban-input"
+        placeholder="00000000"
+        maxlength="8"
+        inputmode="numeric"
+        autocomplete="off"
+        autofocus
+      />
+      <button class="search-btn" onclick="doCheck()" aria-label="查詢">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      <button class="clear-btn" onclick="clearAll()" aria-label="清除">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="hint-row">
+      <svg class="hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+      </svg>
+      輸入完整 8 碼後按查詢鍵或 Enter
+    </div>
+  </div>
+
+  <!-- Result Area -->
+  <div id="resultArea">
+    <div class="state-wrap">
+      <div class="state-icon">🔍</div>
+      <p class="state-title">輸入統一編號開始查詢</p>
+      <p class="state-sub">系統將自動帶入廠商名稱與稅務行業分類，<br>並判斷是否符合本計畫申請資格</p>
+    </div>
+  </div>
+
+  <!-- Reference Table -->
+  <div class="ref-section">
+    <button class="ref-toggle" onclick="toggleRef(this)" aria-expanded="false">
+      <span>📋 申請資格行業分類對照表</span>
+      <svg class="ref-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </button>
+    <div class="ref-body" id="refBody">
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>大類</th>
+            <th>行業名稱</th>
+            <th>六碼前兩碼</th>
+          </tr>
+        </thead>
+        <tbody id="refTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="app-footer">
+    執行單位：財團法人中衛發展中心南區服務處<br>
+    115年服務業深度節能輔導計畫　受理至115年9月30日止
+  </div>
+
+</div>
+
+<script>
+const CATEGORIES = [
+  { letter: 'G', name: '批發及零售業',                           range: '45-48' },
+  { letter: 'H', name: '運輸及倉儲業',                           range: '49-54' },
+  { letter: 'I', name: '住宿及餐飲業',                           range: '55-56' },
+  { letter: 'J', name: '出版、影音製作、傳播及資通訊服務業',      range: '58-63' },
+  { letter: 'K', name: '金融及保險業',                           range: '64-66' },
+  { letter: 'L', name: '不動產業',                               range: '67-68' },
+  { letter: 'M', name: '專業、科學及技術服務業',                  range: '69-76' },
+  { letter: 'N', name: '支援服務業',                             range: '77-82' },
+  { letter: 'O', name: '公共行政及國防；強制性社會安全',           range: '83-84' },
+  { letter: 'P', name: '教育業',                                 range: '85'    },
+  { letter: 'Q', name: '醫療保健及社會工作服務業',                range: '86-88' },
+  { letter: 'R', name: '藝術、娛樂及休閒服務業',                  range: '90-93' },
+  { letter: 'S', name: '其他服務業',                             range: '94-96' },
+];
+
+// Build ref table
+const tbody = document.getElementById('refTbody');
+CATEGORIES.forEach(c => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${c.letter}</td><td>${c.name}</td><td class="ref-range">${c.range}</td>`;
+  tbody.appendChild(tr);
+});
+
+function parseRange(r) {
+  const p = r.split('-');
+  return p.length === 1 ? [+p[0], +p[0]] : [+p[0], +p[1]];
+}
+
+function checkCategory(code) {
+  if (!code || code.length < 2) return null;
+  const prefix = parseInt(code.substring(0, 2));
+  for (const c of CATEGORIES) {
+    const [lo, hi] = parseRange(c.range);
+    if (prefix >= lo && prefix <= hi) return c;
+  }
+  return null;
+}
+
+function toggleRef(btn) {
+  const body = document.getElementById('refBody');
+  const icon = btn.querySelector('.ref-toggle-icon');
+  const open = body.classList.toggle('open');
+  icon.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+}
+
+function clearAll() {
+  document.getElementById('banInput').value = '';
+  document.getElementById('resultArea').innerHTML = `
+    <div class="state-wrap">
+      <div class="state-icon">🔍</div>
+      <p class="state-title">輸入統一編號開始查詢</p>
+      <p class="state-sub">系統將自動帶入廠商名稱與稅務行業分類，<br>並判斷是否符合本計畫申請資格</p>
+    </div>`;
+  document.getElementById('banInput').focus();
+}
+
+function showLoading() {
+  document.getElementById('resultArea').innerHTML = `
+    <div class="state-wrap">
+      <div class="spinner-ring"></div>
+      <p class="state-title">查詢中，請稍候…</p>
+      <p class="state-sub">正在連線至財政部稅籍資料庫</p>
+    </div>`;
+}
+
+function showError(title, desc) {
+  document.getElementById('resultArea').innerHTML = `
+    <div class="error-card">
+      <div class="error-icon">⚠️</div>
+      <div>
+        <p class="error-title">${title}</p>
+        <p class="error-desc">${desc}</p>
+      </div>
+    </div>`;
+}
+
+function now() {
+  return new Date().toLocaleString('zh-TW', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false
+  });
+}
+
+function iconOk() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="#27500a" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+}
+function iconNg() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="#a32d2d" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+}
+function iconBigOk() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="#27500a" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+}
+function iconBigNg() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="#a32d2d" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+}
+
+function renderResult(ban, data) {
+  const keys = [
+    ['industryCd','industryNm'],
+    ['industryCd1','industryNm1'],
+    ['industryCd2','industryNm2'],
+    ['industryCd3','industryNm3'],
+  ];
+  const industries = keys
+    .filter(([ck]) => data[ck])
+    .map(([ck, nk]) => ({ code: data[ck], name: data[nk] || '（未提供）' }));
+
+  const tagged = industries.map(ind => ({ ...ind, cat: checkCategory(ind.code) }));
+  const anyEligible = tagged.some(t => t.cat !== null);
+
+  // avatar letter
+  const avatarLetter = data.businessNm ? data.businessNm.charAt(0) : '?';
+
+  // meta chips
+  const setupRaw = data.businessSetupDate || '';
+  let setupStr = '';
+  if (/^\d{7}$/.test(setupRaw)) {
+    setupStr = `民國${setupRaw.slice(0,3)}年${setupRaw.slice(3,5)}月${setupRaw.slice(5,7)}日設立`;
+  }
+  const chips = [
+    data.businessType && `<span class="chip">${data.businessType}</span>`,
+    setupStr && `<span class="chip">${setupStr}</span>`,
+    data.businessAddress && `<span class="chip" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${data.businessAddress}</span>`,
+  ].filter(Boolean).join('');
+
+  // Industry rows
+  const indRows = tagged.map(t => {
+    const ok = t.cat !== null;
+    const catNote = ok
+      ? `屬大類 ${t.cat.letter}「${t.cat.name}」（前兩碼 ${t.code.substring(0,2)}，範圍 ${t.cat.range}）`
+      : `前兩碼 ${t.code.substring(0,2)}，不在申請範圍 45–96 內`;
+    return `
+      <div class="industry-item">
+        <div class="ind-status ${ok ? 'ok' : 'ng'}">${ok ? iconOk() : iconNg()}</div>
+        <div class="ind-body">
+          <div class="ind-code">${t.code}</div>
+          <div class="ind-name">${t.name}</div>
+          <div class="ind-cat ${ok ? 'ok' : ''}">${catNote}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Verdict
+  let verdictHtml = '';
+  if (anyEligible) {
+    const matched = tagged.filter(t => t.cat);
+    const catList = matched.map(t => `大類 ${t.cat.letter}「${t.cat.name}」`).join('、');
+    verdictHtml = `
+      <div class="verdict-box eligible">
+        <div class="verdict-top">
+          <div class="verdict-icon">${iconBigOk()}</div>
+          <span class="verdict-title">✅ 符合申請資格</span>
+        </div>
+        <p class="verdict-desc">
+          本廠商登記行業代號符合商業服務業申請範圍（前兩碼 45–96），屬於 ${catList}，
+          <strong>可申請 115 年服務業深度節能輔導計畫</strong>。
+        </p>
+      </div>`;
+  } else {
+    const codeList = tagged.map(t => `${t.code}（${t.name}，前兩碼：${t.code.substring(0,2)}）`).join('；');
+    verdictHtml = `
+      <div class="verdict-box ineligible">
+        <div class="verdict-top">
+          <div class="verdict-icon">${iconBigNg()}</div>
+          <span class="verdict-title">❌ 不符合申請資格</span>
+        </div>
+        <p class="verdict-desc">
+          本廠商登記行業代號為 ${codeList}，前兩碼均不在商業服務業申請範圍（45–96）內，
+          <strong>不符合本計畫申請資格</strong>。如有疑義，請確認廠商實際稅籍登記行業或洽服務專線。
+        </p>
+      </div>`;
+  }
+
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result-card">
+      <div class="result-header">
+        <div class="company-name-row">
+          <div class="company-avatar">${avatarLetter}</div>
+          <div>
+            <div class="company-name">${data.businessNm}</div>
+            <div class="company-ban">統一編號：${ban}</div>
+          </div>
+        </div>
+        ${chips ? `<div class="meta-chips">${chips}</div>` : ''}
+      </div>
+      <div class="industries-section">
+        <div class="section-label">稅務行業標準分類（登記行業代號）</div>
+        ${indRows}
+      </div>
+      <div class="verdict-section">${verdictHtml}</div>
+      <div class="query-time">查詢時間：${now()} ｜ 資料來源：財政部財政資訊中心</div>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════
+// 請將下方 https://energy-checker.bono0221.workers.dev 替換為你的 Cloudflare Worker 網址
+// 範例：https://energy-checker.yourname.workers.dev
+// ════════════════════════════════════════════════
+const WORKER_URL = 'https://energy-checker.bono0221.workers.dev';
+
+async function fetchWithProxy(ban) {
+  // 若已設定 Worker，優先使用
+  if (WORKER_URL && WORKER_URL !== 'YOUR_WORKER_URL') {
+    try {
+      const r = await fetch(`${WORKER_URL}?ban=${ban}`);
+      if (r.ok) return await r.json();
+      if (r.status === 404) return null;
+    } catch(_) {}
+  }
+
+  // 備援：嘗試直連（本機開發或已在台灣 IP 環境時可用）
+  try {
+    const r = await fetch(
+      `https://eip.fia.gov.tw/OAI/api/businessRegistration/${ban}`,
+      { mode: 'cors' }
+    );
+    if (r.ok) return await r.json();
+  } catch(_) {}
+
+  throw new Error('NO_WORKER_CONFIGURED');
+}
+
+async function doCheck() {
+  const ban = document.getElementById('banInput').value.trim();
+  if (!/^\d{8}$/.test(ban)) {
+    showError('格式錯誤', '統一編號需為 8 碼純數字，請確認後重新輸入。');
+    return;
+  }
+
+  showLoading();
+
+  try {
+    const data = await fetchWithProxy(ban);
+
+    if (!data || !data.businessNm) {
+      showError(
+        '查無資料',
+        `統一編號「${ban}」查無稅籍登記資料。可能原因：①統編輸入有誤；②廠商尚未完成稅籍登記；③廠商已停業。請確認後重試。`
+      );
+      return;
+    }
+
+    renderResult(ban, data);
+
+  } catch (e) {
+    if (e.message === 'NO_WORKER_CONFIGURED') {
+      showError(
+        '尚未設定查詢後端',
+        '請依照設定說明，建立 Cloudflare Worker 並將網址填入程式碼中的 WORKER_URL 欄位，即可正常查詢。'
+      );
+    } else {
+      showError('查詢發生錯誤', `錯誤訊息：${e.message}。請稍後再試，或聯絡系統管理員。`);
+    }
+  }
+}
+
+// Enter key
+document.getElementById('banInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doCheck();
+});
+
+// Auto-trigger when 8 digits typed
+document.getElementById('banInput').addEventListener('input', e => {
+  const v = e.target.value.replace(/\D/g, '');
+  e.target.value = v;
+  if (v.length === 8) doCheck();
+});
+</script>
+</body>
+</html>
