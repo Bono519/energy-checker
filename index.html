@@ -384,6 +384,22 @@
     border-top: 1px solid var(--gray-100);
   }
 
+  /* ── Status Warning ── */
+  .status-warning-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid #BA7517;
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    animation: fadeUp 0.25s ease;
+  }
+  .status-warning-title { font-size: 14px; font-weight: 600; color: #633806; margin-bottom: 4px; }
+  .status-warning-desc  { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
   /* ── Error ── */
   .error-card {
     background: var(--white);
@@ -670,7 +686,7 @@ function iconBigNg() {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="#a32d2d" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
 }
 
-function renderResult(ban, data) {
+function renderResult(ban, data, bizStatus = 'active') {
   const keys = [
     ['industryCd','industryNm'],
     ['industryCd1','industryNm1'],
@@ -747,7 +763,29 @@ function renderResult(ban, data) {
       </div>`;
   }
 
-  document.getElementById('resultArea').innerHTML = `
+  // 停業／歇業警示
+  let statusWarningHtml = '';
+  if (bizStatus === 'suspended') {
+    statusWarningHtml = `
+      <div class="status-warning-card">
+        <div style="font-size:22px;flex-shrink:0">⚠️</div>
+        <div>
+          <p class="status-warning-title">注意：此廠商目前為【停業】狀態</p>
+          <p class="status-warning-desc">依財政部稅籍登記資料，本廠商目前處於停業狀態，尚未正式歇業。停業期間原則上不符合輔導計畫申請資格，建議向廠商確認實際營業情形後再行判斷。</p>
+        </div>
+      </div>`;
+  } else if (bizStatus === 'closed') {
+    statusWarningHtml = `
+      <div class="status-warning-card">
+        <div style="font-size:22px;flex-shrink:0">🚫</div>
+        <div>
+          <p class="status-warning-title">注意：此廠商目前為【歇業】狀態</p>
+          <p class="status-warning-desc">依財政部稅籍登記資料，本廠商已完成歇業登記，<strong>不符合</strong>本計畫申請資格。</p>
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('resultArea').innerHTML = statusWarningHtml + `
     <div class="result-card">
       <div class="result-header">
         <div class="company-name-row">
@@ -811,12 +849,22 @@ async function doCheck() {
     if (!data || !data.businessNm) {
       showError(
         '查無資料',
-        `統一編號「${ban}」查無稅籍登記資料。可能原因：①統編輸入有誤；②廠商尚未完成稅籍登記；③廠商已停業。請確認後重試。`
+        `統一編號「${ban}」查無稅籍登記資料。可能原因：①統編輸入有誤；②廠商尚未完成稅籍登記。請確認後重試。`
       );
       return;
     }
 
-    renderResult(ban, data);
+    // 停業或歇業
+    if (data.status === 'suspended') {
+      renderResult(ban, data, 'suspended');
+      return;
+    }
+    if (data.status === 'closed') {
+      renderResult(ban, data, 'closed');
+      return;
+    }
+
+    renderResult(ban, data, 'active');
 
   } catch (e) {
     if (e.message === 'NO_WORKER_CONFIGURED') {
